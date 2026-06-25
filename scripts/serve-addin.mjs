@@ -41,9 +41,15 @@ const handler = (request, response) => {
 
 const certPath = options.cert ? resolve(options.cert) : undefined;
 const keyPath = options.key ? resolve(options.key) : undefined;
-const useHttps = certPath && keyPath;
+const pfxPath = options.pfx ? resolve(options.pfx) : undefined;
+const useHttps = pfxPath || (certPath && keyPath);
+const httpsOptions = pfxPath
+  ? { pfx: readFileSync(pfxPath), passphrase: options.passphrase }
+  : certPath && keyPath
+    ? { cert: readFileSync(certPath), key: readFileSync(keyPath) }
+    : undefined;
 const server = useHttps
-  ? createHttpsServer({ cert: readFileSync(certPath), key: readFileSync(keyPath) }, handler)
+  ? createHttpsServer(httpsOptions, handler)
   : createHttpServer(handler);
 
 server.listen(port, () => {

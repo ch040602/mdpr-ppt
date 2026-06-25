@@ -78,10 +78,14 @@ test("PowerPoint add-in manifest and taskpane expose the approved selection rail
   assert.match(taskpaneHtml, /id="copyObjectInfo"/);
   assert.match(taskpaneHtml, /id="copySelectionContext"/);
   assert.match(taskpaneHtml, /id="copyOverrideCandidate"/);
+  assert.match(taskpaneHtml, /id="transformKind"/);
+  assert.match(taskpaneHtml, /id="copyTransformCandidate"/);
   assert.match(taskpaneHtml, /id="objectInfo"/);
   assert.match(taskpaneHtml, /approved selection rail/i);
   assert.match(taskpaneJs, /getSelectedShapes/);
   assert.match(taskpaneJs, /buildObjectInfo/);
+  assert.match(taskpaneJs, /buildTransformCandidate/);
+  assert.match(taskpaneJs, /mdpr-ppt-pack-candidate-v1/);
   assert.match(taskpaneJs, /copyObjectInfo/);
   assert.match(taskpaneJs, /parseMdprShapeName/);
   assert.match(taskpaneJs, /agent-hint-final-decision/);
@@ -118,13 +122,30 @@ test("Windows install helper prepares a PowerPoint shared-folder add-in catalog"
 test("PowerPoint direct sideload scripts launch the add-in inside PowerPoint", () => {
   const readme = readFileSync("README.md", "utf-8");
   const packageJson = readFileSync("package.json", "utf-8");
+  const startScript = readFileSync("scripts/start-powerpoint-addin-windows.ps1", "utf-8");
+  const stopScript = readFileSync("scripts/stop-powerpoint-addin-windows.ps1", "utf-8");
+  const serverScript = readFileSync("scripts/serve-addin.mjs", "utf-8");
 
   assert.match(packageJson, /start:ppt/);
   assert.match(packageJson, /start:ppt:debug/);
-  assert.match(packageJson, /office-addin-debugging start packages\/addin\/manifest\.xml desktop --app powerpoint --no-debug/);
+  assert.match(packageJson, /scripts\/start-powerpoint-addin-windows\.ps1/);
   assert.match(packageJson, /stop:ppt/);
+  assert.match(startScript, /New-SelfSignedCertificate/);
+  assert.match(startScript, /Get-PSDrive -Name Cert/);
+  assert.match(startScript, /CertificateRequest/);
+  assert.match(startScript, /certutil -user -addstore Root/);
+  assert.match(startScript, /Cert:\\CurrentUser\\Root/);
+  assert.match(startScript, /serve-addin\.mjs/);
+  assert.match(startScript, /--pfx/);
+  assert.match(startScript, /"office-addin-debugging", "start"/);
+  assert.match(startScript, /--no-debug/);
+  assert.match(stopScript, /"office-addin-debugging", "stop"/);
+  assert.match(stopScript, /mdpr-ppt-addin-server\.pid/);
+  assert.match(serverScript, /pfx/);
+  assert.match(serverScript, /image\/png/);
   assert.match(readme, /npm run start:ppt/);
   assert.match(readme, /npm run stop:ppt/);
+  assert.match(readme, /HTTPS localhost asset server/);
   assert.match(readme, /If the MDPR tab is not visible/);
 });
 

@@ -13,6 +13,7 @@ const ids = {
   presentationId: "presentationId",
   slideId: "slideId",
   userInstruction: "userInstruction",
+  transformKind: "transformKind",
   outputJson: "outputJson",
   objectInfo: "objectInfo",
   captureSelectedShapes: "captureSelectedShapes",
@@ -21,6 +22,7 @@ const ids = {
   copyObjectInfo: "copyObjectInfo",
   copySelectionContext: "copySelectionContext",
   copyOverrideCandidate: "copyOverrideCandidate",
+  copyTransformCandidate: "copyTransformCandidate",
 };
 
 function element(id) {
@@ -239,6 +241,43 @@ function buildOverrideCandidate(selection) {
   };
 }
 
+function buildTransformCandidate(selection) {
+  const transformKind = inputValue(ids.transformKind) || "callout";
+  const blockIds = selection.mdprMapping.blockIds || [];
+  const firstShape = selection.shapes[0] || {};
+  return {
+    schemaVersion: "mdpr-ppt-pack-candidate-v1",
+    kind: "component-pack",
+    source: {
+      tool: "mdpr-ppt",
+      selectionRef: "taskpane-selection.json",
+      userApproved: true,
+      pptxSha256: selection.source.pptxSha256,
+    },
+    tokens: {
+      extractedFromSelection: true,
+      styleSnapshot: firstShape.styleSnapshot || {},
+    },
+    components: [{
+      id: `selected-${transformKind}`,
+      kind: transformKind,
+      sourceSlideId: selection.mdprMapping.slideId,
+      sourceRegionId: selection.mdprMapping.regionId,
+      sourceBlockIds: blockIds,
+      slots: {
+        content: blockIds.length ? blockIds : ["unmapped-block"],
+      },
+      editable: true,
+      transformIntent: inputValue(ids.userInstruction) || `Convert selected object to MDPR ${transformKind}.`,
+    }],
+    requiresApproval: true,
+    constraints: {
+      noRawUseInAgentHints: true,
+      requiresDesignLockUpdate: true,
+    },
+  };
+}
+
 async function copyText(value) {
   if (navigator.clipboard?.writeText) {
     await navigator.clipboard.writeText(value);
@@ -296,6 +335,12 @@ function bindUi() {
 
   element(ids.copyOverrideCandidate).addEventListener("click", () => runAction(async () => {
     const text = writeOutput(buildOverrideCandidate(requireApprovedSelection()));
+    await copyText(text);
+    setStatus("Copied");
+  }));
+
+  element(ids.copyTransformCandidate).addEventListener("click", () => runAction(async () => {
+    const text = writeOutput(buildTransformCandidate(requireApprovedSelection()));
     await copyText(text);
     setStatus("Copied");
   }));

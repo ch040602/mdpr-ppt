@@ -1,8 +1,8 @@
 # mdpr-ppt
 
-`mdpr-ppt` is the PowerPoint bridge for MDPR. It captures user-selected
-PowerPoint shapes, anchors, and style samples as approved JSON evidence that
-MDPR and `mdpr-skill` can reference safely.
+`mdpr-ppt` is a PowerPoint add-in bridge for MDPR. It inspects selected
+PowerPoint objects, captures user-approved shape/style evidence, and creates
+MDPR component transform candidates from inside PowerPoint.
 
 It is not an agent layout tool. It does not ask an LLM to invent coordinates,
 colors, recipes, variants, z-order, or exact renderer objects.
@@ -58,9 +58,11 @@ without the Office debugging popup:
 npm run start:ppt
 ```
 
-This registers the manifest for a sideloading session and opens PowerPoint with
-the add-in loaded. When you are done testing, stop that session so Office clears
-the development registration:
+This creates and trusts a current-user localhost certificate, starts the
+HTTPS localhost asset server required by the Office manifest, registers the manifest
+for a sideloading session, and opens PowerPoint with the add-in loaded. When you
+are done testing, stop that session so Office clears the development
+registration and shuts down the local server:
 
 ```powershell
 npm run stop:ppt
@@ -135,6 +137,7 @@ In PowerPoint:
    - `Copy Object Info`
    - `Copy Selection Context`
    - `Copy Override Candidate`
+   - `Copy MDPR Transform Candidate`
 
 `Copy Object Info` is the fastest way to inspect the selected PowerPoint
 object. It includes shape ids, names, types, bounds, style snapshots, and any
@@ -147,6 +150,12 @@ geometry and style before producing weak mdpr-skill review context.
 If a selected shape name follows MDPR renderer metadata such as
 `mdpr:slide-4:region-main:b12`, the task pane automatically fills the MDPR
 slide, region, and block mapping fields.
+
+`Copy MDPR Transform Candidate` creates an approved
+`mdpr-ppt-pack-candidate-v1` component-pack proposal directly from the selected
+PowerPoint object. This is separate from mdpr-skill: mdpr-ppt records the
+user-selected object and requested target component, then MDPR can validate and
+import the candidate through its own pack/override workflow.
 
 ### Use from the CLI
 

@@ -2,7 +2,7 @@
   "name": "mdpr-ppt",
   "version": "0.1.0",
   "private": false,
-  "description": "PowerPoint bridge for user-approved MDPR shape selections, style snapshots, and override or pack candidates.",
+  "description": "PowerPoint add-in bridge for MDPR object inspection, approved selection capture, and component transform candidates.",
   "type": "module",
   "bin": {
     "mdpr-ppt": "./bin/mdpr-ppt.js"
@@ -11,9 +11,9 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx tests/shared.test.ts",
     "serve:addin": "node scripts/serve-addin.mjs",
-    "start:ppt": "npx --yes office-addin-debugging start packages/addin/manifest.xml desktop --app powerpoint --no-debug",
-    "start:ppt:debug": "npx --yes office-addin-debugging start packages/addin/manifest.xml desktop --app powerpoint",
-    "stop:ppt": "npx --yes office-addin-debugging stop packages/addin/manifest.xml",
+    "start:ppt": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-powerpoint-addin-windows.ps1",
+    "start:ppt:debug": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-powerpoint-addin-windows.ps1 -Debug",
+    "stop:ppt": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/stop-powerpoint-addin-windows.ps1",
     "install:addin:windows": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-addin-windows.ps1",
     "install:addin:windows:register": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-addin-windows.ps1 -TryShare -RegisterTrustCatalog",
     "validate": "npm run typecheck && npm test"
@@ -21,8 +21,12 @@
   "keywords": [
     "mdpr",
     "powerpoint",
+    "powerpoint-addin",
+    "office-js",
     "office-addin",
-    "pptx"
+    "pptx",
+    "pptx-automation",
+    "markdown-to-powerpoint"
   ],
   "license": "MIT",
   "devDependencies": {
