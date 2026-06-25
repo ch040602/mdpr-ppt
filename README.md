@@ -48,16 +48,44 @@ The repository now includes a sideloadable PowerPoint task pane UI at
 `packages/addin/taskpane/index.html` and an Office add-in manifest at
 `packages/addin/manifest.xml`.
 
-Office task pane manifests use HTTPS `SourceLocation` URLs. Start a local
-server with your trusted development certificate and key:
+Prepare the local Windows add-in catalog and copy the manifest:
+
+```powershell
+npm run install:addin:windows
+```
+
+For the PowerPoint `SHARED FOLDER` add-in menu, Microsoft expects a trusted
+shared folder catalog. To also try creating that Windows share, run PowerShell
+as an administrator and pass `-TryShare`:
+
+```powershell
+npm run install:addin:windows -- -TryShare
+```
+
+The script writes `install-next-steps.txt` under
+`%LOCALAPPDATA%\mdpr-ppt\AddinCatalog`. It contains the manifest path and, when
+`-TryShare` succeeds, the UNC catalog path to add in PowerPoint. If you run
+without `-TryShare`, share that folder manually or rerun the command from an
+elevated PowerShell session with `-TryShare`.
+
+Office task pane manifests use HTTPS `SourceLocation` URLs. Start the task pane
+asset server with your trusted development certificate and key:
 
 ```bash
 npm run serve:addin -- --cert ./certs/localhost.crt --key ./certs/localhost.key
 ```
 
-Then sideload `packages/addin/manifest.xml` in PowerPoint. On Windows desktop
-PowerPoint, place the manifest in a trusted add-in catalog or use your normal
-Office Add-in sideload workflow.
+Then register the catalog in PowerPoint:
+
+1. Open PowerPoint.
+2. Go to `File > Options > Trust Center > Trust Center Settings`.
+3. Open `Trusted Add-in Catalogs`.
+4. Add the catalog URL from `install-next-steps.txt`.
+5. Enable `Show in Menu` for that catalog.
+6. Restart PowerPoint.
+7. Go to `Home > Add-ins > Advanced`.
+8. Choose `SHARED FOLDER`.
+9. Add `mdpr-ppt`.
 
 In PowerPoint:
 
@@ -69,8 +97,13 @@ In PowerPoint:
 6. Click `Approve Selection`.
 7. Copy one of the approved rail outputs:
    - `Copy Selection JSON`
+   - `Copy Object Info`
    - `Copy Selection Context`
    - `Copy Override Candidate`
+
+`Copy Object Info` is the fastest way to inspect the selected PowerPoint
+object. It includes shape ids, names, types, bounds, style snapshots, and any
+MDPR metadata inferred from shape names.
 
 The task pane keeps raw PowerPoint `bboxPt`, fill, line, and text style data in
 the approved `mdpr-ppt-selection-v1` output. `Copy Selection Context` strips

@@ -14,9 +14,11 @@ const ids = {
   slideId: "slideId",
   userInstruction: "userInstruction",
   outputJson: "outputJson",
+  objectInfo: "objectInfo",
   captureSelectedShapes: "captureSelectedShapes",
   approveSelection: "approveSelection",
   copySelectionJson: "copySelectionJson",
+  copyObjectInfo: "copyObjectInfo",
   copySelectionContext: "copySelectionContext",
   copyOverrideCandidate: "copyOverrideCandidate",
 };
@@ -38,6 +40,12 @@ function setStatus(label) {
 function writeOutput(value) {
   const text = typeof value === "string" ? value : JSON.stringify(value, null, 2);
   element(ids.outputJson).value = text;
+  return text;
+}
+
+function writeObjectInfo(value) {
+  const text = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+  element(ids.objectInfo).value = text;
   return text;
 }
 
@@ -102,6 +110,24 @@ function inferMdprMapping(snapshots) {
     ...(regionIds.length === 1 ? { regionId: regionIds[0] } : {}),
     blockIds,
     mappingConfidence: Number((parsed.length / Math.max(snapshots.length, 1)).toFixed(3)),
+  };
+}
+
+function buildObjectInfo() {
+  const mapping = inferMdprMapping(state.snapshots);
+  return {
+    schemaVersion: "mdpr-ppt-object-info-v1",
+    capturedShapes: state.snapshots.length,
+    inferredMdprMapping: mapping,
+    objects: state.snapshots.map((snapshot, index) => ({
+      index,
+      pptShapeId: snapshot.pptShapeId,
+      name: snapshot.name,
+      type: snapshot.type,
+      bboxPt: snapshot.bboxPt,
+      styleSnapshot: snapshot.styleSnapshot || {},
+      mdprTag: parseMdprShapeName(snapshot.name) || null,
+    })),
   };
 }
 
@@ -235,7 +261,9 @@ function bindUi() {
   element(ids.captureSelectedShapes).addEventListener("click", () => runAction(async () => {
     state.snapshots = await captureSelectedShapesFromPowerPoint();
     state.approved = false;
-    writeOutput({ capturedShapes: state.snapshots.length, shapes: state.snapshots });
+    const objectInfo = buildObjectInfo();
+    writeObjectInfo(objectInfo);
+    writeOutput(objectInfo);
     setStatus(state.snapshots.length > 0 ? "Captured" : "Empty");
   }));
 
@@ -248,6 +276,14 @@ function bindUi() {
 
   element(ids.copySelectionJson).addEventListener("click", () => runAction(async () => {
     const text = writeOutput(requireApprovedSelection());
+    await copyText(text);
+    setStatus("Copied");
+  }));
+
+  element(ids.copyObjectInfo).addEventListener("click", () => runAction(async () => {
+    if (state.snapshots.length === 0) throw new Error("Capture at least one selected shape first.");
+    const text = writeObjectInfo(buildObjectInfo());
+    writeOutput(JSON.parse(text));
     await copyText(text);
     setStatus("Copied");
   }));

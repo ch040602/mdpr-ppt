@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx tests/shared.test.ts",
     "serve:addin": "node scripts/serve-addin.mjs",
+    "install:addin:windows": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-addin-windows.ps1",
     "validate": "npm run typecheck && npm test"
   },
   "keywords": [

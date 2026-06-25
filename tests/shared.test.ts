@@ -69,16 +69,35 @@ test("PowerPoint add-in manifest and taskpane expose the approved selection rail
   assert.match(taskpaneHtml, /id="captureSelectedShapes"/);
   assert.match(taskpaneHtml, /id="approveSelection"/);
   assert.match(taskpaneHtml, /id="copySelectionJson"/);
+  assert.match(taskpaneHtml, /id="copyObjectInfo"/);
   assert.match(taskpaneHtml, /id="copySelectionContext"/);
   assert.match(taskpaneHtml, /id="copyOverrideCandidate"/);
+  assert.match(taskpaneHtml, /id="objectInfo"/);
   assert.match(taskpaneHtml, /approved selection rail/i);
   assert.match(taskpaneJs, /getSelectedShapes/);
+  assert.match(taskpaneJs, /buildObjectInfo/);
+  assert.match(taskpaneJs, /copyObjectInfo/);
   assert.match(taskpaneJs, /parseMdprShapeName/);
   assert.match(taskpaneJs, /agent-hint-final-decision/);
   assert.match(taskpaneJs, /delete selectionContext\.shapes/);
   assert.doesNotMatch(taskpaneJs, /fetch\(/);
   assert.equal(existsSync("packages/addin/assets/icon.svg"), true);
   assert.equal(existsSync("scripts/serve-addin.mjs"), true);
+});
+
+test("Windows install helper prepares a PowerPoint shared-folder add-in catalog", () => {
+  const script = readFileSync("scripts/install-addin-windows.ps1", "utf-8");
+  const readme = readFileSync("README.md", "utf-8");
+  const packageJson = readFileSync("package.json", "utf-8");
+
+  assert.match(script, /packages[\\/]addin[\\/]manifest\.xml/);
+  assert.match(script, /AddinCatalog/);
+  assert.match(script, /New-SmbShare/);
+  assert.match(script, /Trusted Add-in Catalogs/);
+  assert.match(readme, /npm run install:addin:windows/);
+  assert.match(readme, /Home > Add-ins > Advanced/);
+  assert.match(packageJson, /install:addin:windows/);
+  assert.match(packageJson, /-NoProfile/);
 });
 
 test("validatePptSelection requires user approval and allowed use rails", () => {

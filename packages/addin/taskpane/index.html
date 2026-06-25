@@ -43,8 +43,14 @@
 
       <section class="actions" aria-label="Export actions">
         <button id="copySelectionJson" type="button">Copy Selection JSON</button>
+        <button id="copyObjectInfo" type="button">Copy Object Info</button>
         <button id="copySelectionContext" type="button">Copy Selection Context</button>
         <button id="copyOverrideCandidate" type="button">Copy Override Candidate</button>
+      </section>
+
+      <section class="panel">
+        <label for="objectInfo">Selected object information</label>
+        <textarea id="objectInfo" rows="8" spellcheck="false" readonly></textarea>
       </section>
 
       <section class="panel">
