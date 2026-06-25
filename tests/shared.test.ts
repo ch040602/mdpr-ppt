@@ -120,7 +120,8 @@ test("PowerPoint direct sideload scripts launch the add-in inside PowerPoint", (
   const packageJson = readFileSync("package.json", "utf-8");
 
   assert.match(packageJson, /start:ppt/);
-  assert.match(packageJson, /office-addin-debugging start packages\/addin\/manifest\.xml desktop --app powerpoint/);
+  assert.match(packageJson, /start:ppt:debug/);
+  assert.match(packageJson, /office-addin-debugging start packages\/addin\/manifest\.xml desktop --app powerpoint --no-debug/);
   assert.match(packageJson, /stop:ppt/);
   assert.match(readme, /npm run start:ppt/);
   assert.match(readme, /npm run stop:ppt/);
