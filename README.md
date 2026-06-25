@@ -50,6 +50,22 @@ The repository now includes a sideloadable PowerPoint task pane UI at
 tab with an `Inspect Selection` button, so the bridge is opened from inside
 PowerPoint instead of from an external JSON tool.
 
+If the MDPR tab is not visible, use the direct PowerPoint sideload command
+first. This is the closest development workflow to a normal in-PowerPoint
+add-in:
+
+```powershell
+npm run start:ppt
+```
+
+This registers the manifest for a debugging session and opens PowerPoint with
+the add-in loaded. When you are done testing, stop that session so Office clears
+the development registration:
+
+```powershell
+npm run stop:ppt
+```
+
 Prepare the local Windows add-in catalog and copy the manifest:
 
 ```powershell

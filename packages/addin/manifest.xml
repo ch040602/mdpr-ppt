@@ -5,13 +5,13 @@
   xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
   xsi:type="TaskPaneApp">
   <Id>5f47ce38-15e2-4be1-8c35-9b73c7c7cb7e</Id>
-  <Version>0.1.0.0</Version>
+  <Version>1.0.0.0</Version>
   <ProviderName>MDPR</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="mdpr-ppt" />
   <Description DefaultValue="Capture approved PowerPoint selections for MDPR and mdpr-skill." />
-  <IconUrl DefaultValue="https://localhost:3000/assets/icon.svg" />
-  <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon.svg" />
+  <IconUrl DefaultValue="https://localhost:3000/assets/icon-32.png" />
+  <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-80.png" />
   <SupportUrl DefaultValue="https://github.com/ch040602/mdpr-ppt" />
   <AppDomains>
     <AppDomain>https://localhost:3000</AppDomain>
@@ -71,9 +71,9 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://localhost:3000/assets/icon.svg"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://localhost:3000/assets/icon.svg"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://localhost:3000/assets/icon.svg"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://localhost:3000/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://localhost:3000/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://localhost:3000/assets/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
         <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane/index.html"/>

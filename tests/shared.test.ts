@@ -62,13 +62,16 @@ test("PowerPoint add-in manifest and taskpane expose the approved selection rail
   const taskpaneJs = readFileSync("packages/addin/taskpane/taskpane.js", "utf-8");
 
   assert.match(manifest, /<Hosts>\s*<Host Name="Presentation"\/>\s*<\/Hosts>/);
+  assert.match(manifest, /<Version>1\.0\.0\.0<\/Version>/);
   assert.match(manifest, /PowerPointApi/);
   assert.match(manifest, /PrimaryCommandSurface/);
   assert.match(manifest, /CustomTab id="MdprPpt\.Tab"/);
   assert.match(manifest, /Inspect Selection/);
   assert.match(manifest, /taskpane\/index\.html/);
   assert.match(manifest, /https:\/\/localhost:3000/);
-  assert.match(manifest, /assets\/icon\.svg/);
+  assert.match(manifest, /assets\/icon-16\.png/);
+  assert.match(manifest, /assets\/icon-32\.png/);
+  assert.match(manifest, /assets\/icon-80\.png/);
   assert.match(taskpaneHtml, /id="captureSelectedShapes"/);
   assert.match(taskpaneHtml, /id="approveSelection"/);
   assert.match(taskpaneHtml, /id="copySelectionJson"/);
@@ -84,7 +87,9 @@ test("PowerPoint add-in manifest and taskpane expose the approved selection rail
   assert.match(taskpaneJs, /agent-hint-final-decision/);
   assert.match(taskpaneJs, /delete selectionContext\.shapes/);
   assert.doesNotMatch(taskpaneJs, /fetch\(/);
-  assert.equal(existsSync("packages/addin/assets/icon.svg"), true);
+  assert.equal(existsSync("packages/addin/assets/icon-16.png"), true);
+  assert.equal(existsSync("packages/addin/assets/icon-32.png"), true);
+  assert.equal(existsSync("packages/addin/assets/icon-80.png"), true);
   assert.equal(existsSync("scripts/serve-addin.mjs"), true);
 });
 
@@ -108,6 +113,18 @@ test("Windows install helper prepares a PowerPoint shared-folder add-in catalog"
   assert.match(readme, /Home > Add-ins > Advanced/);
   assert.match(packageJson, /install:addin:windows/);
   assert.match(packageJson, /-NoProfile/);
+});
+
+test("PowerPoint direct sideload scripts launch the add-in inside PowerPoint", () => {
+  const readme = readFileSync("README.md", "utf-8");
+  const packageJson = readFileSync("package.json", "utf-8");
+
+  assert.match(packageJson, /start:ppt/);
+  assert.match(packageJson, /office-addin-debugging start packages\/addin\/manifest\.xml desktop --app powerpoint/);
+  assert.match(packageJson, /stop:ppt/);
+  assert.match(readme, /npm run start:ppt/);
+  assert.match(readme, /npm run stop:ppt/);
+  assert.match(readme, /If the MDPR tab is not visible/);
 });
 
 test("validatePptSelection requires user approval and allowed use rails", () => {
