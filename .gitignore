@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.mdpresent/
+.codex/
+*.log

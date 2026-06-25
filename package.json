@@ -1,0 +1,27 @@
+{
+  "name": "mdpr-ppt",
+  "version": "0.1.0",
+  "private": false,
+  "description": "PowerPoint bridge for user-approved MDPR shape selections, style snapshots, and override or pack candidates.",
+  "type": "module",
+  "bin": {
+    "mdpr-ppt": "./bin/mdpr-ppt.js"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsx tests/shared.test.ts",
+    "validate": "npm run typecheck && npm test"
+  },
+  "keywords": [
+    "mdpr",
+    "powerpoint",
+    "office-addin",
+    "pptx"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  }
+}
