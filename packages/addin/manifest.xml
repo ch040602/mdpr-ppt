@@ -81,12 +81,12 @@
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="Commands.TabLabel" DefaultValue="MDPR"/>
-        <bt:String id="Commands.GroupLabel" DefaultValue="Bridge"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Selection Bridge"/>
+        <bt:String id="Commands.GroupLabel" DefaultValue="Inspector"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="Inspect Selection"/>
         <bt:String id="GetStarted.Title" DefaultValue="Open mdpr-ppt"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Capture approved PowerPoint selections for MDPR."/>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Open the MDPR inspector for the selected PowerPoint object."/>
         <bt:String id="GetStarted.Description" DefaultValue="Use mdpr-ppt to capture selected PowerPoint shapes as approved JSON evidence."/>
       </bt:LongStrings>
     </Resources>

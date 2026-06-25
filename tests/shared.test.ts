@@ -63,6 +63,9 @@ test("PowerPoint add-in manifest and taskpane expose the approved selection rail
 
   assert.match(manifest, /<Hosts>\s*<Host Name="Presentation"\/>\s*<\/Hosts>/);
   assert.match(manifest, /PowerPointApi/);
+  assert.match(manifest, /PrimaryCommandSurface/);
+  assert.match(manifest, /CustomTab id="MdprPpt\.Tab"/);
+  assert.match(manifest, /Inspect Selection/);
   assert.match(manifest, /taskpane\/index\.html/);
   assert.match(manifest, /https:\/\/localhost:3000/);
   assert.match(manifest, /assets\/icon\.svg/);
@@ -93,8 +96,15 @@ test("Windows install helper prepares a PowerPoint shared-folder add-in catalog"
   assert.match(script, /packages[\\/]addin[\\/]manifest\.xml/);
   assert.match(script, /AddinCatalog/);
   assert.match(script, /New-SmbShare/);
+  assert.match(script, /RegisterTrustCatalog/);
+  assert.match(script, /TrustedCatalogs/);
+  assert.match(script, /New-Guid/);
+  assert.match(script, /Flags/);
   assert.match(script, /Trusted Add-in Catalogs/);
   assert.match(readme, /npm run install:addin:windows/);
+  assert.match(readme, /RegisterTrustCatalog/);
+  assert.match(readme, /MDPR tab/);
+  assert.match(readme, /Inspect Selection/);
   assert.match(readme, /Home > Add-ins > Advanced/);
   assert.match(packageJson, /install:addin:windows/);
   assert.match(packageJson, /-NoProfile/);

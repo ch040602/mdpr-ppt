@@ -46,7 +46,9 @@ the bridge contracts it emits or consumes: `mdpr-ppt-selection`,
 
 The repository now includes a sideloadable PowerPoint task pane UI at
 `packages/addin/taskpane/index.html` and an Office add-in manifest at
-`packages/addin/manifest.xml`.
+`packages/addin/manifest.xml`. The manifest adds an `MDPR` PowerPoint ribbon
+tab with an `Inspect Selection` button, so the bridge is opened from inside
+PowerPoint instead of from an external JSON tool.
 
 Prepare the local Windows add-in catalog and copy the manifest:
 
@@ -54,19 +56,28 @@ Prepare the local Windows add-in catalog and copy the manifest:
 npm run install:addin:windows
 ```
 
-For the PowerPoint `SHARED FOLDER` add-in menu, Microsoft expects a trusted
-shared folder catalog. To also try creating that Windows share, run PowerShell
-as an administrator and pass `-TryShare`:
+For the closest IguanaTex-like Windows setup, run PowerShell as an
+administrator and let the helper create a shared-folder catalog and register it
+under the current user's Office Trusted Add-in Catalogs registry key:
 
 ```powershell
-npm run install:addin:windows -- -TryShare
+npm run install:addin:windows:register
+```
+
+This runs the installer with `-TryShare -RegisterTrustCatalog`. If you want to
+run the options manually:
+
+```powershell
+npm run install:addin:windows -- -TryShare -RegisterTrustCatalog
 ```
 
 The script writes `install-next-steps.txt` under
 `%LOCALAPPDATA%\mdpr-ppt\AddinCatalog`. It contains the manifest path and, when
 `-TryShare` succeeds, the UNC catalog path to add in PowerPoint. If you run
 without `-TryShare`, share that folder manually or rerun the command from an
-elevated PowerShell session with `-TryShare`.
+elevated PowerShell session with `-TryShare`. If `-RegisterTrustCatalog`
+succeeds, the Office trusted catalog entry is created for the current Windows
+user; otherwise add the catalog manually in PowerPoint Trust Center.
 
 Office task pane manifests use HTTPS `SourceLocation` URLs. Start the task pane
 asset server with your trusted development certificate and key:
@@ -75,23 +86,24 @@ asset server with your trusted development certificate and key:
 npm run serve:addin -- --cert ./certs/localhost.crt --key ./certs/localhost.key
 ```
 
-Then register the catalog in PowerPoint:
+Then restart PowerPoint. If the MDPR tab is not visible yet, register or
+confirm the catalog in PowerPoint:
 
 1. Open PowerPoint.
 2. Go to `File > Options > Trust Center > Trust Center Settings`.
 3. Open `Trusted Add-in Catalogs`.
-4. Add the catalog URL from `install-next-steps.txt`.
-5. Enable `Show in Menu` for that catalog.
+4. Confirm the catalog URL from `install-next-steps.txt` is listed.
+5. Enable `Show in Menu` for that catalog if it is not already enabled.
 6. Restart PowerPoint.
-7. Go to `Home > Add-ins > Advanced`.
+7. If needed, go to `Home > Add-ins > Advanced`.
 8. Choose `SHARED FOLDER`.
-9. Add `mdpr-ppt`.
+9. Add `mdpr-ppt` once.
 
 In PowerPoint:
 
 1. Open an MDPR-generated PPTX.
 2. Select one or more MDPR-created shapes.
-3. Open the `MDPR` ribbon tab and choose `Selection Bridge`.
+3. Open the `MDPR` tab and choose `Inspect Selection`.
 4. Enter the MDPR source SHA-256 and PPTX SHA-256.
 5. Click `Capture Selected Shapes`.
 6. Click `Approve Selection`.
