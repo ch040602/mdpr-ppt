@@ -10,6 +10,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "tsx tests/shared.test.ts",
+    "serve:addin": "node scripts/serve-addin.mjs",
     "validate": "npm run typecheck && npm test"
   },
   "keywords": [

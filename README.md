@@ -42,6 +42,46 @@ the bridge contracts it emits or consumes: `mdpr-ppt-selection`,
 
 ## Usage
 
+### Use inside PowerPoint
+
+The repository now includes a sideloadable PowerPoint task pane UI at
+`packages/addin/taskpane/index.html` and an Office add-in manifest at
+`packages/addin/manifest.xml`.
+
+Office task pane manifests use HTTPS `SourceLocation` URLs. Start a local
+server with your trusted development certificate and key:
+
+```bash
+npm run serve:addin -- --cert ./certs/localhost.crt --key ./certs/localhost.key
+```
+
+Then sideload `packages/addin/manifest.xml` in PowerPoint. On Windows desktop
+PowerPoint, place the manifest in a trusted add-in catalog or use your normal
+Office Add-in sideload workflow.
+
+In PowerPoint:
+
+1. Open an MDPR-generated PPTX.
+2. Select one or more MDPR-created shapes.
+3. Open the `MDPR` ribbon tab and choose `Selection Bridge`.
+4. Enter the MDPR source SHA-256 and PPTX SHA-256.
+5. Click `Capture Selected Shapes`.
+6. Click `Approve Selection`.
+7. Copy one of the approved rail outputs:
+   - `Copy Selection JSON`
+   - `Copy Selection Context`
+   - `Copy Override Candidate`
+
+The task pane keeps raw PowerPoint `bboxPt`, fill, line, and text style data in
+the approved `mdpr-ppt-selection-v1` output. `Copy Selection Context` strips
+geometry and style before producing weak mdpr-skill review context.
+
+If a selected shape name follows MDPR renderer metadata such as
+`mdpr:slide-4:region-main:b12`, the task pane automatically fills the MDPR
+slide, region, and block mapping fields.
+
+### Use from the CLI
+
 Validate a captured selection:
 
 ```bash
@@ -88,9 +128,10 @@ npm install
 npm run validate
 ```
 
-The first milestone keeps Office.js integration behind a small adapter
-boundary. `packages/addin/src/office/getSelectedShapes.ts` captures the current
+The Office.js integration is split into a small adapter and a static task pane.
+`packages/addin/src/office/getSelectedShapes.ts` captures the current
 PowerPoint selection through an Office.js-like context and converts each shape
-through the shared snapshot mapper. Future milestones should add the taskpane
-UI, approval panels, and OOXML fallback extraction without weakening the
-no-agent deterministic boundary.
+through the shared snapshot mapper. `packages/addin/taskpane/taskpane.js`
+provides the user-facing capture, approval, copy, selection-context, and
+override-candidate controls without weakening the no-agent deterministic
+boundary.

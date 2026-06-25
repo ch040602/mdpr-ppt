@@ -56,6 +56,31 @@ test("captureSelectedShapeSnapshots loads selected PowerPoint shapes through an 
   assert.deepEqual(snapshots[0].bboxPt, { left: 184, top: 126, width: 420, height: 180, rotation: 0 });
 });
 
+test("PowerPoint add-in manifest and taskpane expose the approved selection rail UI", () => {
+  const manifest = readFileSync("packages/addin/manifest.xml", "utf-8");
+  const taskpaneHtml = readFileSync("packages/addin/taskpane/index.html", "utf-8");
+  const taskpaneJs = readFileSync("packages/addin/taskpane/taskpane.js", "utf-8");
+
+  assert.match(manifest, /<Hosts>\s*<Host Name="Presentation"\/>\s*<\/Hosts>/);
+  assert.match(manifest, /PowerPointApi/);
+  assert.match(manifest, /taskpane\/index\.html/);
+  assert.match(manifest, /https:\/\/localhost:3000/);
+  assert.match(manifest, /assets\/icon\.svg/);
+  assert.match(taskpaneHtml, /id="captureSelectedShapes"/);
+  assert.match(taskpaneHtml, /id="approveSelection"/);
+  assert.match(taskpaneHtml, /id="copySelectionJson"/);
+  assert.match(taskpaneHtml, /id="copySelectionContext"/);
+  assert.match(taskpaneHtml, /id="copyOverrideCandidate"/);
+  assert.match(taskpaneHtml, /approved selection rail/i);
+  assert.match(taskpaneJs, /getSelectedShapes/);
+  assert.match(taskpaneJs, /parseMdprShapeName/);
+  assert.match(taskpaneJs, /agent-hint-final-decision/);
+  assert.match(taskpaneJs, /delete selectionContext\.shapes/);
+  assert.doesNotMatch(taskpaneJs, /fetch\(/);
+  assert.equal(existsSync("packages/addin/assets/icon.svg"), true);
+  assert.equal(existsSync("scripts/serve-addin.mjs"), true);
+});
+
 test("validatePptSelection requires user approval and allowed use rails", () => {
   const selection = fixtureSelection();
   assert.deepEqual(validatePptSelection(selection), []);

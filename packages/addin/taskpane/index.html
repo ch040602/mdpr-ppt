@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>mdpr-ppt</title>
+    <link rel="stylesheet" href="./taskpane.css">
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="header">
+        <div>
+          <p class="eyebrow">approved selection rail</p>
+          <h1>mdpr-ppt</h1>
+        </div>
+        <span id="statusBadge" class="status">Idle</span>
+      </header>
+
+      <section class="panel">
+        <label for="sourceSha256">MDPR source SHA-256</label>
+        <input id="sourceSha256" spellcheck="false" placeholder="64 lowercase hex characters">
+
+        <label for="pptxSha256">PPTX SHA-256</label>
+        <input id="pptxSha256" spellcheck="false" placeholder="64 lowercase hex characters">
+
+        <label for="presentationId">Presentation id</label>
+        <input id="presentationId" spellcheck="false" value="powerpoint-presentation">
+
+        <label for="slideId">PowerPoint slide id</label>
+        <input id="slideId" spellcheck="false" value="ppt-slide-current">
+      </section>
+
+      <section class="actions" aria-label="Selection actions">
+        <button id="captureSelectedShapes" type="button">Capture Selected Shapes</button>
+        <button id="approveSelection" type="button">Approve Selection</button>
+      </section>
+
+      <section class="panel">
+        <label for="userInstruction">Review instruction</label>
+        <textarea id="userInstruction" rows="3" placeholder="Keep this table and explanation visually together."></textarea>
+      </section>
+
+      <section class="actions" aria-label="Export actions">
+        <button id="copySelectionJson" type="button">Copy Selection JSON</button>
+        <button id="copySelectionContext" type="button">Copy Selection Context</button>
+        <button id="copyOverrideCandidate" type="button">Copy Override Candidate</button>
+      </section>
+
+      <section class="panel">
+        <label for="outputJson">Output</label>
+        <textarea id="outputJson" rows="14" spellcheck="false" readonly></textarea>
+      </section>
+
+      <p class="note">
+        Raw PowerPoint geometry and style snapshots stay in the approved
+        selection rail. Selection context and override candidates never become
+        agent final-decision fields.
+      </p>
+    </main>
+    <script src="./taskpane.js"></script>
+  </body>
+</html>
